@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "Scripts\\python.exe",
+    "python.linting.pylintArgs": [
+        "--extension-pkg-whitelist=pygame",  // The extension is "lxml" not "1xml"
+        "--disable",
+        "missing-docstring"
+    ]
+}

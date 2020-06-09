@@ -1,0 +1,123 @@
+import math
+import random as rnd
+import time
+import pygame
+from Library.bullet import Bullet
+from Library.player import Player
+
+def collision(obj1, obj2):
+    obj1Pos = obj1.get_pos()
+    obj2Pos = obj2.get_pos()
+
+    return bool(math.sqrt((obj1Pos[0] - obj2Pos[0]) ** 2 + (obj1Pos[1] - obj2Pos[1]) ** 2) < 20)
+
+def draw_text(txt, size, pos, color):
+    font = pygame.font.Font('Resources/NanumGothic.ttf', size)
+    r = font.render(txt, True, color)
+    screen.blit(r, pos)
+
+pygame.init()
+
+WIDTH, HEIGHT = 1000, 800
+FPS = 60
+
+pygame.display.set_caption("총알 피하기")
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+clock = pygame.time.Clock()
+
+time_for_adding_bullets = 0
+
+player = Player(WIDTH/2, HEIGHT/2)
+
+bg_image = pygame.image.load("Resources/bg.jpg")
+bg_pos = 0
+
+pygame.mixer.music.load("Resources/bgm.wav")
+pygame.mixer.music.play(-1)
+
+screen.blit(bg_image, (0, 0))
+pygame.display.update()
+
+time.sleep(3)
+
+start_time = time.time()
+
+bullets = []
+
+for i in range(10):
+    bullets.append(Bullet(0, rnd.random()*HEIGHT, rnd.random()-0.5, rnd.random()-0.5))
+
+# Game Loop
+RUNNING = True
+GAMEOVER = False
+score = 0
+
+while RUNNING:
+    dt = clock.tick(FPS)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            RUNNING = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                player.goto(-1, 0)
+            elif event.key == pygame.K_RIGHT:
+                player.goto(1, 0)
+            elif event.key == pygame.K_UP:
+                player.goto(0, -1)
+            elif event.key == pygame.K_DOWN:
+                player.goto(0, 1)
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                player.goto(1, 0)
+            elif event.key == pygame.K_RIGHT:
+                player.goto(-1, 0)
+            elif event.key == pygame.K_UP:
+                player.goto(0, 1)
+            elif event.key == pygame.K_DOWN:
+                player.goto(0, -1)
+
+    bg_pos -= 0.01 * dt
+    screen.blit(bg_image, (bg_pos, 0))
+
+    player.update(dt, screen)
+    player.draw(screen)
+
+    for b in bullets:
+        b.update_and_draw(dt, screen)
+
+    elapsed_time = time.time() - start_time
+    txt = "Time: {:.1f} Bullets: {}".format(elapsed_time, len(bullets))
+
+    if GAMEOVER:
+        txt = "Time: {:.1f} Bullets: {}".format(score, len(bullets))
+        draw_text("GAME OVER", 100, (WIDTH/2 - 300, HEIGHT/2 - 70), (255, 255, 255))
+        draw_text(txt, 32, (WIDTH/2 - 150, HEIGHT/2 + 50), (255, 255, 255))
+    else:
+        txt = "Time: {:.1f} Bullets: {}".format(elapsed_time, len(bullets))
+        draw_text(txt, 32, (10, 10), (255, 255, 255))
+
+    pygame.display.update()
+
+    if not GAMEOVER:
+        for b in bullets:
+            if collision(player, b):
+                GAMEOVER = True
+                score = elapsed_time
+                #time.sleep(2)
+                #RUNNING = False
+
+        time_for_adding_bullets += dt
+
+        if time_for_adding_bullets > 2000:
+            bullets.append(Bullet(0, rnd.random()*HEIGHT, rnd.random() - 0.5, rnd.random() - 0.5))
+            time_for_adding_bullets -= 2000
+
+    #is_out_of_screen = player.is_out_of_screen(screen)
+
+    #if is_out_of_screen:
+    #    RUNNING = False
+
+print("Quit")
+pygame.quit()
