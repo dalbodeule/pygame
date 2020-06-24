@@ -128,19 +128,12 @@ while RUNNING:
                     GAMEOVER = True
                     score = elapsed_time
                     hpbar.hide()
-                    #time.sleep(2)
-                    #RUNNING = False
 
         time_for_adding_bullets += dt
 
         if time_for_adding_bullets > 2000:
             bullets.append(Bullet(0, rnd.random()*HEIGHT, rnd.random() - 0.5, rnd.random() - 0.5))
             time_for_adding_bullets -= 2000
-
-    #is_out_of_screen = player.is_out_of_screen(screen)
-
-    #if is_out_of_screen:
-    #    RUNNING = False
 
 print("Quit")
 pygame.quit()
