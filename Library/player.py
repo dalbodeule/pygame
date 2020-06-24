@@ -46,21 +46,22 @@ class Player:
         elif self.__to == [0, -1]: self.__angle = 0
 
         # if show bomb effect
+        rotated = None
+
         if self.__show_effect:
             rotated = pygame.transform.rotate(self.__effect_image, self.__angle)
-
-            calib_pos = [0, 0]
-            calib_pos[0] = self.__pos[0] - rotated.get_width()/2
-            calib_pos[1] = self.__pos[1] - rotated.get_height()/2
-
-            screen.blit(rotated, calib_pos)
         else:
             rotated = pygame.transform.rotate(self.__image, self.__angle)
 
-            calib_pos = [0, 0]
-            calib_pos[0] = self.__pos[0] - rotated.get_width()/2
-            calib_pos[1] = self.__pos[1] - rotated.get_height()/2
+        calib_pos = [0, 0]
+        calib_pos[0] = self.__pos[0] - rotated.get_width()/2
+        calib_pos[1] = self.__pos[1] - rotated.get_height()/2
 
+        # if hit, blink during god time
+        if self.__is_god:
+            if self.__is_god_during // 100 % 2 == 0:
+                screen.blit(rotated, calib_pos)
+        else:
             screen.blit(rotated, calib_pos)
 
     def goto(self, x, y):
