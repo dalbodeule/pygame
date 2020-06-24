@@ -1,4 +1,4 @@
-from operator import attrgetter
+from functools import cmp_to_key
 import datetime
 import math
 import random as rnd
@@ -122,7 +122,6 @@ while RUNNING:
         b.update_and_draw(dt, screen)
 
     elapsed_time = time.time() - start_time
-    txt = "Time: {:.1f} Bullets: {}".format(elapsed_time, len(bullets))
 
     if GAMEOVER:
         txt = "Time: {:.1f} Bullets: {}".format(score, len(bullets))
@@ -141,11 +140,11 @@ while RUNNING:
                     GAMEOVER = True
                     score = elapsed_time
                     hpbar.hide()
-                    
+
                     # add now score
-                    score_list.append(ScoreObj(score, len(bullets), datetime.datetime.now()))
+                    score_list.append(ScoreObj(int(score), len(bullets), datetime.datetime.now().timestamp()))
                     # sort scores
-                    score_list = sorted(score_list, key=attrgetter('score', 'time'))
+                    score_list = sorted(score_list, key=cmp_to_key(lambda x, y: y.score - x.score if x.score != y.score else x.time - y.time))
                     # splice scores
                     score_list = score_list[0:10]
 
