@@ -16,7 +16,11 @@ def draw_text(txt, size, pos, color):
     r = font.render(txt, True, color)
     screen.blit(r, pos)
 
+# pygame init
 pygame.init()
+
+# mixer init
+pygame.mixer.init()
 
 WIDTH, HEIGHT = 1000, 800
 FPS = 60
@@ -28,13 +32,16 @@ clock = pygame.time.Clock()
 
 time_for_adding_bullets = 0
 
-player = Player(WIDTH/2, HEIGHT/2)
+player = Player(WIDTH/2, HEIGHT/2, pygame.mixer)
 
 bg_image = pygame.image.load("Resources/bg.jpg")
 bg_pos = 0
 
-pygame.mixer.music.load("Resources/bgm.wav")
-pygame.mixer.music.play(-1)
+# get sound main channel (main channel: 0)
+mainChannel = pygame.mixer.Channel(0)
+
+# play bgm with main channel
+mainChannel.play(pygame.mixer.Sound('Resources/bgm.wav'), -1)
 
 screen.blit(bg_image, (0, 0))
 pygame.display.update()
@@ -103,6 +110,7 @@ while RUNNING:
     if not GAMEOVER:
         for b in bullets:
             if collision(player, b):
+                player.hit()
                 GAMEOVER = True
                 score = elapsed_time
                 #time.sleep(2)

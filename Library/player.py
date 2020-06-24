@@ -1,12 +1,17 @@
 import pygame
 
 class Player:
-    def __init__(self, x, y):
+    def __init__(self, x, y, mixer):
         self.__image = pygame.image.load('Resources/player.png')
         self.__image = pygame.transform.scale(self.__image, (128, 128))
         self.__pos = [x, y]
         self.__to = [0, 0]
         self.__angle = 0
+        # init player sound channel (player channel: 1)
+        self.__channel = mixer.Channel(1)
+
+        # load crash sound
+        self.__sound = mixer.Sound('Resources/crash.wav')
 
     def get_pos(self):
         return self.__pos
@@ -42,6 +47,10 @@ class Player:
 
         self.__pos[0] = min(max(self.__pos[0], 32), width-32)
         self.__pos[1] = min(max(self.__pos[1], 32), height-32)
+
+    def hit(self):
+        ## if hit, play hit sound
+        self.__channel.play(self.__sound)
 
     def is_out_of_screen(self, screen):
         width, height = screen.get_size()
