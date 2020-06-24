@@ -120,7 +120,7 @@ while RUNNING:
     if not GAMEOVER:
         for b in bullets:
             if collision(player, b):
-                if player.hit():
+                if player.hit(b.get_damage()):
                     GAMEOVER = True
                     score = elapsed_time
                     #time.sleep(2)

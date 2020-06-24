@@ -35,7 +35,6 @@ class Player:
         return self.__health
 
     def draw(self, screen):
-
         if self.__to == [-1, -1]: self.__angle = 45
         elif self.__to == [-1, 0]: self.__angle = 90
         elif self.__to == [-1, 1]: self.__angle = 135
@@ -87,14 +86,14 @@ class Player:
             self.__is_god = False
 
 
-    def hit(self):
+    def hit(self, damage):
         # if player is not god: show effects
         if not self.__is_god:
             # if hit, play hit sound
             self.__channel.play(self.__sound)
 
             # if hit, minus health
-            self.__health -= 10
+            self.__health -= damage
 
             # if hit, show bomb effect
             self.__show_effect = True

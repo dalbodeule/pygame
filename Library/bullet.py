@@ -1,20 +1,17 @@
-import pygame
+from .Bullets.blue_bullet import BlueBullet
+from .Bullets.red_bullet import RedBullet
+from .Bullets.white_bullet import WhiteBullet
 
-class Bullet:
-    def __init__(self, x, y, toX, toY):
-        self.__pos = [x, y]
-        self.__to = [toX, toY]
-        self.__radius = 7
-        self.__color = (190, 0, 0)
+from random import randint as rnint
 
-    def get_pos(self):
-        return self.__pos
+def Bullet(x, y, toX, toY):
+    rnd = rnint(1, 100)
 
-    def update_and_draw(self, dt, screen):
-        width, height = screen.get_size()
-        self.__pos[0] = (self.__pos[0] + dt*self.__to[0]) % width
-        self.__pos[1] = (self.__pos[1] + dt*self.__to[1]) % height
+    print(rnd)
 
-        pos_int = (int(self.__pos[0]), int(self.__pos[1]))
-
-        pygame.draw.circle(screen, self.__color, pos_int, self.__radius)
+    if rnd <= 50:
+        return RedBullet(x, y, toX, toY)
+    elif rnd <= 90:
+        return BlueBullet(x, y, toX, toY)
+    else:
+        return WhiteBullet(x, y, toX, toY)
