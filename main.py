@@ -35,7 +35,7 @@ time_for_adding_bullets = 0
 player = Player(WIDTH/2, HEIGHT/2, pygame.mixer)
 
 bg_image = pygame.image.load("Resources/bg.jpg")
-bg_pos = 0
+bg_pos = (-150, -150)
 
 # get sound main channel (main channel: 0)
 mainChannel = pygame.mixer.Channel(0)
@@ -43,7 +43,7 @@ mainChannel = pygame.mixer.Channel(0)
 # play bgm with main channel
 mainChannel.play(pygame.mixer.Sound('Resources/bgm.wav'), -1)
 
-screen.blit(bg_image, (0, 0))
+screen.blit(bg_image, bg_pos)
 pygame.display.update()
 
 time.sleep(3)
@@ -60,6 +60,8 @@ RUNNING = True
 GAMEOVER = False
 score = 0
 
+bg_goto = (0, 0)
+
 while RUNNING:
     dt = clock.tick(FPS)
 
@@ -69,12 +71,18 @@ while RUNNING:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 player.goto(-1, 0)
+
+                # add bg will move direction
+                bg_goto = (-1, 0)
             elif event.key == pygame.K_RIGHT:
                 player.goto(1, 0)
+                bg_goto = (1, 0)
             elif event.key == pygame.K_UP:
                 player.goto(0, -1)
+                bg_goto = (0, -1)
             elif event.key == pygame.K_DOWN:
                 player.goto(0, 1)
+                bg_goto = (0, 1)
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 player.goto(1, 0)
@@ -84,9 +92,11 @@ while RUNNING:
                 player.goto(0, 1)
             elif event.key == pygame.K_DOWN:
                 player.goto(0, -1)
+            bg_goto = (0, 0)
 
-    bg_pos -= 0.01 * dt
-    screen.blit(bg_image, (bg_pos, 0))
+    # calculate bg move
+    bg_pos = (bg_pos[0] + bg_goto[0] * 0.01 * dt, bg_pos[1] + bg_goto[1] * 0.01 * dt)
+    screen.blit(bg_image, bg_pos)
 
     player.update(dt, screen)
     player.draw(screen)

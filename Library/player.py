@@ -76,7 +76,7 @@ class Player:
 
         # if hit, show bomb effect
         self.__show_effect = True
-        self.__show_effect_during = 500
+        self.__show_effect_during = 1000
 
     def is_out_of_screen(self, screen):
         width, height = screen.get_size()
