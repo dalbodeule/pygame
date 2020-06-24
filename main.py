@@ -73,6 +73,7 @@ for i in range(10):
 RUNNING = True
 GAMEOVER = False
 score = 0
+nowTime = None
 
 bg_goto = (0, 0)
 
@@ -124,9 +125,15 @@ while RUNNING:
     elapsed_time = time.time() - start_time
 
     if GAMEOVER:
+        draw_text("GAME OVER", 100, (WIDTH/2 - 300, HEIGHT/2 - 300), (255, 255, 255))
+
         txt = "Time: {:.1f} Bullets: {}".format(score, len(bullets))
-        draw_text("GAME OVER", 100, (WIDTH/2 - 300, HEIGHT/2 - 70), (255, 255, 255))
-        draw_text(txt, 32, (WIDTH/2 - 150, HEIGHT/2 + 50), (255, 255, 255))
+        draw_text(txt, 32, (WIDTH/2 - 150, HEIGHT/2 - 180), (255, 255, 255))
+
+        # draw scores
+        for i in range(0, min(10, len(score_list))):
+            txt = "{} - Time: {:.1f} Bullets: {}".format(i+1, score_list[i].score, score_list[i].bullet)
+            draw_text(txt, 32, (WIDTH/2 - 170, HEIGHT/2 - 100 + 40*i), (255, 255, 255) if not nowTime == score_list[i] else (255, 255, 0))
     else:
         txt = "Time: {:.1f} Bullets: {} Health: {}".format(elapsed_time, len(bullets), player.get_health())
         draw_text(txt, 32, (10, 10), (255, 255, 255))
@@ -141,8 +148,11 @@ while RUNNING:
                     score = elapsed_time
                     hpbar.hide()
 
+                    # get now time
+                    nowTime = datetime.datetime.now().timestamp()
+
                     # add now score
-                    score_list.append(ScoreObj(int(score), len(bullets), datetime.datetime.now().timestamp()))
+                    score_list.append(ScoreObj(score, len(bullets), nowTime))
                     # sort scores
                     score_list = sorted(score_list, key=cmp_to_key(lambda x, y: y.score - x.score if x.score != y.score else x.time - y.time))
                     # splice scores
