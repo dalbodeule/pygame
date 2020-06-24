@@ -21,8 +21,18 @@ class Player:
         # load crash sound
         self.__sound = mixer.Sound('Resources/crash.wav')
 
+        # add helath
+        self.__health = 100
+
+        # add god time
+        self.__is_god = False
+        self.__is_god_during = 0
+
     def get_pos(self):
         return self.__pos
+
+    def get_health(self):
+        return self.__health
 
     def draw(self, screen):
 
@@ -70,13 +80,31 @@ class Player:
         if self.__show_effect_during < 0:
             self.__show_effect = False
 
-    def hit(self):
-        # if hit, play hit sound
-        self.__channel.play(self.__sound)
+        #calc god time during
+        self.__is_god_during -= dt
+        if self.__is_god_during < 0:
+            self.__is_god = False
 
-        # if hit, show bomb effect
-        self.__show_effect = True
-        self.__show_effect_during = 1000
+
+    def hit(self):
+        # if player is not god: show effects
+        if not self.__is_god:
+            # if hit, play hit sound
+            self.__channel.play(self.__sound)
+
+            # if hit, minus health
+            self.__health -= 10
+
+            # if hit, show bomb effect
+            self.__show_effect = True
+            self.__show_effect_during = 1000
+
+            # if hit, now player is god
+            self.__is_god = True
+            self.__is_god_during = 1000
+
+        # if health is zero: return true
+        return bool(self.__health <= 0)
 
     def is_out_of_screen(self, screen):
         width, height = screen.get_size()

@@ -112,7 +112,7 @@ while RUNNING:
         draw_text("GAME OVER", 100, (WIDTH/2 - 300, HEIGHT/2 - 70), (255, 255, 255))
         draw_text(txt, 32, (WIDTH/2 - 150, HEIGHT/2 + 50), (255, 255, 255))
     else:
-        txt = "Time: {:.1f} Bullets: {}".format(elapsed_time, len(bullets))
+        txt = "Time: {:.1f} Bullets: {} Health: {}".format(elapsed_time, len(bullets), player.get_health())
         draw_text(txt, 32, (10, 10), (255, 255, 255))
 
     pygame.display.update()
@@ -120,11 +120,11 @@ while RUNNING:
     if not GAMEOVER:
         for b in bullets:
             if collision(player, b):
-                player.hit()
-                GAMEOVER = True
-                score = elapsed_time
-                #time.sleep(2)
-                #RUNNING = False
+                if player.hit():
+                    GAMEOVER = True
+                    score = elapsed_time
+                    #time.sleep(2)
+                    #RUNNING = False
 
         time_for_adding_bullets += dt
 
