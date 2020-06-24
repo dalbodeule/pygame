@@ -4,6 +4,7 @@ import time
 import pygame
 from Library.bullet import Bullet
 from Library.player import Player
+from Library.hpbar import HPBar
 
 def collision(obj1, obj2):
     obj1Pos = obj1.get_pos()
@@ -34,6 +35,8 @@ time_for_adding_bullets = 0
 
 player = Player(WIDTH/2, HEIGHT/2, pygame.mixer)
 
+hpbar = HPBar(screen, player.get_health(), 100)
+
 bg_image = pygame.image.load("Resources/bg.jpg")
 bg_pos = (-150, -150)
 
@@ -45,8 +48,6 @@ mainChannel.play(pygame.mixer.Sound('Resources/bgm.wav'), -1)
 
 screen.blit(bg_image, bg_pos)
 pygame.display.update()
-
-time.sleep(3)
 
 start_time = time.time()
 
@@ -101,6 +102,9 @@ while RUNNING:
     player.update(dt, screen)
     player.draw(screen)
 
+    hpbar.update(player.get_health())
+    hpbar.draw(screen)
+
     for b in bullets:
         b.update_and_draw(dt, screen)
 
@@ -123,6 +127,7 @@ while RUNNING:
                 if player.hit(b.get_damage()):
                     GAMEOVER = True
                     score = elapsed_time
+                    hpbar.hide()
                     #time.sleep(2)
                     #RUNNING = False
 

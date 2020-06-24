@@ -7,8 +7,6 @@ from random import randint as rnint
 def Bullet(x, y, toX, toY):
     rnd = rnint(1, 100)
 
-    print(rnd)
-
     if rnd <= 50:
         return RedBullet(x, y, toX, toY)
     elif rnd <= 90:
