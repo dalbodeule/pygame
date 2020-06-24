@@ -1,1 +1,1 @@
-__all__ = ['player', 'bullet']
+__all__ = ['player', 'bullet', 'hpbar', 'score']

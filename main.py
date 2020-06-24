@@ -1,10 +1,14 @@
+from operator import attrgetter
+import datetime
 import math
 import random as rnd
 import time
+import pickle
 import pygame
 from Library.bullet import Bullet
 from Library.player import Player
 from Library.hpbar import HPBar
+from Library.score import ScoreObj
 
 def collision(obj1, obj2):
     obj1Pos = obj1.get_pos()
@@ -16,6 +20,15 @@ def draw_text(txt, size, pos, color):
     font = pygame.font.Font('Resources/NanumGothic.ttf', size)
     r = font.render(txt, True, color)
     screen.blit(r, pos)
+
+score_list = []
+
+# score file open with read
+try:
+    with open('scores', 'rb') as f:
+        score_list = pickle.load(f)
+except:
+    print("score file not found")
 
 # pygame init
 pygame.init()
@@ -128,6 +141,15 @@ while RUNNING:
                     GAMEOVER = True
                     score = elapsed_time
                     hpbar.hide()
+                    
+                    # add now score
+                    score_list.append(ScoreObj(score, len(bullets), datetime.datetime.now()))
+                    # sort scores
+                    score_list = sorted(score_list, key=attrgetter('score', 'time'))
+                    # splice scores
+                    score_list = score_list[0:10]
+
+                    print(score_list)
 
         time_for_adding_bullets += dt
 
@@ -136,4 +158,9 @@ while RUNNING:
             time_for_adding_bullets -= 2000
 
 print("Quit")
+
+# file open and write scores
+with open('scores', 'wb') as f:
+    pickle.dump(score_list, f)
+
 pygame.quit()
