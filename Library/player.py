@@ -4,6 +4,14 @@ class Player:
     def __init__(self, x, y, mixer):
         self.__image = pygame.image.load('Resources/player.png')
         self.__image = pygame.transform.scale(self.__image, (128, 128))
+
+        # add effect image (boom image)
+        self.__effect_image = pygame.image.load('Resources/boom.png')
+        self.__effect_image = pygame.transform.scale(self.__effect_image, (128, 128))
+
+        self.__show_effect = False
+        self.__show_effect_during = 0
+
         self.__pos = [x, y]
         self.__to = [0, 0]
         self.__angle = 0
@@ -27,14 +35,23 @@ class Player:
         elif self.__to == [1, -1]: self.__angle = -45
         elif self.__to == [0, -1]: self.__angle = 0
 
+        # if show bomb effect
+        if self.__show_effect:
+            rotated = pygame.transform.rotate(self.__effect_image, self.__angle)
 
-        rotated = pygame.transform.rotate(self.__image, self.__angle)
+            calib_pos = [0, 0]
+            calib_pos[0] = self.__pos[0] - rotated.get_width()/2
+            calib_pos[1] = self.__pos[1] - rotated.get_height()/2
 
-        calib_pos = [0, 0]
-        calib_pos[0] = self.__pos[0] - rotated.get_width()/2
-        calib_pos[1] = self.__pos[1] - rotated.get_height()/2
+            screen.blit(rotated, calib_pos)
+        else:
+            rotated = pygame.transform.rotate(self.__image, self.__angle)
 
-        screen.blit(rotated, calib_pos)
+            calib_pos = [0, 0]
+            calib_pos[0] = self.__pos[0] - rotated.get_width()/2
+            calib_pos[1] = self.__pos[1] - rotated.get_height()/2
+
+            screen.blit(rotated, calib_pos)
 
     def goto(self, x, y):
         self.__to[0] += x
@@ -48,9 +65,18 @@ class Player:
         self.__pos[0] = min(max(self.__pos[0], 32), width-32)
         self.__pos[1] = min(max(self.__pos[1], 32), height-32)
 
+        # calc show bomb effect during
+        self.__show_effect_during -= dt
+        if self.__show_effect_during < 0:
+            self.__show_effect = False
+
     def hit(self):
-        ## if hit, play hit sound
+        # if hit, play hit sound
         self.__channel.play(self.__sound)
+
+        # if hit, show bomb effect
+        self.__show_effect = True
+        self.__show_effect_during = 500
 
     def is_out_of_screen(self, screen):
         width, height = screen.get_size()
