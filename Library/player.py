@@ -30,6 +30,9 @@ class Player:
 
     def get_pos(self):
         return self.__pos
+    
+    def get_to(self):
+        return self.__to
 
     def get_health(self):
         return self.__health

@@ -75,8 +75,6 @@ GAMEOVER = False
 score = 0
 nowTime = None
 
-bg_goto = (0, 0)
-
 while RUNNING:
     dt = clock.tick(FPS)
 
@@ -86,18 +84,12 @@ while RUNNING:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 player.goto(-1, 0)
-
-                # add bg will move direction
-                bg_goto = (-1, 0)
             elif event.key == pygame.K_RIGHT:
                 player.goto(1, 0)
-                bg_goto = (1, 0)
             elif event.key == pygame.K_UP:
                 player.goto(0, -1)
-                bg_goto = (0, -1)
             elif event.key == pygame.K_DOWN:
                 player.goto(0, 1)
-                bg_goto = (0, 1)
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 player.goto(1, 0)
@@ -107,10 +99,12 @@ while RUNNING:
                 player.goto(0, 1)
             elif event.key == pygame.K_DOWN:
                 player.goto(0, -1)
-            bg_goto = (0, 0)
 
     # calculate bg move
-    bg_pos = (bg_pos[0] + bg_goto[0] * 0.01 * dt, bg_pos[1] + bg_goto[1] * 0.01 * dt)
+    bg_goto = player.get_to()
+
+    bg_pos = (bg_pos[0] + bg_goto[0] * -0.01 * dt, bg_pos[1] + bg_goto[1] * -0.01 * dt)
+    bg_pos = (max(min(bg_pos[0], 0), -2053 + WIDTH), max(min(bg_pos[1], 0), -1500 + HEIGHT))
     screen.blit(bg_image, bg_pos)
 
     player.update(dt, screen)
